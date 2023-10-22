@@ -1,0 +1,60 @@
+//google drive api v3 for nodejs
+
+//npm install googleapis
+const {google} = require("googleapis");
+//service account json in directory, make sure to share file with service account address in drive!
+const servicekeydir = path.join(__dirname + "/servicekey.json");
+const privatekey = require(servicekeydir);
+
+//configure a JWT auth client
+const jwtClient = new google.auth.JWT(
+       privatekey.client_email,
+       null,
+       privatekey.private_key,
+       ['https://www.googleapis.com/auth/drive'],
+        null,
+        privatekey.private_key_id);
+
+//authenticate request check
+jwtClient.authorize(function (err, tokens) {
+  if (err) {
+    console.log(err+" no auth");
+    return;
+  } 
+  else {
+    console.log("Successfully connected");
+  }
+});
+
+//Google Drive API
+const drive = google.drive({
+  version: 'v3',
+  auth: jwtClient,
+});
+
+//get data from file
+async function getData() {
+  try {
+    const request = await drive.files.get( {
+      fileId: googleId,
+      //mimetype below, alt: 'media' for json
+      alt: 'media'
+       });
+      var body = request.data;
+      //do stuff with body contents
+  }
+  catch ( err ) {
+    console.error( err );
+  }
+}
+
+
+//update file, mimeType example for json, body as new variable for file body
+async function writeData() {
+  await drive.files.update({fileId:googleId, media:{mimeType: 'application/json', body:JSON.stringify(body, null, 2)},}, (err, body) => {
+    if (err) {
+      console.log(err);
+    }
+}
+});
+
