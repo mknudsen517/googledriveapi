@@ -6,6 +6,9 @@ const {google} = require("googleapis");
 const servicekeydir = path.join(__dirname + "/servicekey.json");
 const privatekey = require(servicekeydir);
 
+//declare as the file id for what you are working with in the drive
+var googleId;
+
 //configure a JWT auth client
 const jwtClient = new google.auth.JWT(
        privatekey.client_email,
